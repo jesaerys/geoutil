@@ -506,7 +506,7 @@ class Geoset(object):
     """
 
     def __init__(self, items=None, attrs=None, hdr=None):
-        if items is None
+        if items is None:
             items = []
         elif not getattr(items, '__iter__', False):
             items = [items]
