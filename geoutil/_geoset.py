@@ -1,21 +1,26 @@
 """
-Container classes for organizing collections of shapely.geometry objects.
 
-This module defines a custom data structure called a geoset that enables
-basic grouping and attribution of objects from the geometry subpackage of
-shapely. The geoset structure is implemented using nested classes: Geo
-instances are stored in Item instances, and Item instances are stored in a
-Geoset instance. See the Geoset class for full description of the geoset
+=================
+`geoutil._geoset`
+=================
+
+Container classes for organizing collections of `shapely.geometry` objects.
+
+This module defines a custom data structure called a *geoset* that enables
+basic grouping and attribution of objects from `shapely.geometry`. The
+geoset structure is implemented using nested classes: `Geo` instances are
+stored in `Item` instances, and `Item` instances are stored in a `Geoset`
+instance. See the `Geoset` class for a full description of the geoset
 model.
 
 Classes
 -------
-Geo
-    Container for a single geometry object.
-Item
-    Container for a group of Geo instances.
-Geoset
-    Container for a group of Item instances.
+
+======== ==========================================
+`Geo`    Container for a single geometry object.
+`Item`   Container for a group of `Geo` instances.
+`Geoset` Container for a group of `Item` instances.
+======== ==========================================
 
 """
 from collections import OrderedDict
@@ -28,38 +33,37 @@ from . import _utils
 
 class Geo(object):
 
-    """
-    Container for a single geometry object.
+    """Container for a single geometry object.
 
-    Store a geometry class instance from shapely.geometry and a set of
+    Store a geometry class instance from `shapely.geometry` and a set of
     attributes. This class represents the smallest unit in the geoset
-    specification (see the Geoset class for an overview).
+    specification (see the `Geoset` class for an overview).
 
     Parameters
     ----------
-    geo : class from shapely.geometry or None
-        Initialize the geo instance variable.
+    geo : class from `shapely.geometry` or None
+        Initializes the `geo` instance variable.
     attrs : optional
-        Initialize the attrs instance variable. Default value is None.
+        Initializes the `attrs` instance variable. Default value is None.
 
     Attributes
     ----------
-    geo : class from shapely.geometry or None
-        Any class instance from the geometry subpackage of shapely, e.g.
-        Polygon, MultiPolygon, Point, etc. May also be None.
+    geo : class from `shapely.geometry` or None
+        Any class instance from `shapely.geometry`, e.g., `Polygon`. May also
+        be None.
     attrs : dict-like or None
-        Attributes as key-value pairs (typically an OrderedDict). None if
+        Attributes as key-value pairs (typically an `OrderedDict`). None if
         no attributes.
 
     Methods
     -------
-    pix2world(hdr)
+    pix2world
         Return a copy with coordinates converted to the WCS world system.
-    world2pix(hdr)
+    world2pix
         Return a copy with coordinates converted to the pixel system.
-    translate(dx, dy)
+    translate
         Return a copy with coordinates translated by dx and dy.
-    copy()
+    copy
         Return a deep copy.
 
     """
@@ -99,21 +103,21 @@ class Geo(object):
         return level*indent + 'Geo' + istr + geostr + attrstr
 
     def pix2world(self, hdr):
-        """
-        Return a copy with coordinates converted to the WCS world system.
+        """Return a copy with coordinates converted to the WCS world
+        system.
 
         Any attributes describing the coordinate system of the item must be
         updated manually!
 
         Parameters
         ----------
-        hdr : astropy.io.fits.Header
+        hdr : `astropy.io.fits.Header`
             Transform coordinates according to the WCS information in the
             FITS header.
 
         Returns
         -------
-        out : Geo
+        out : `Geo`
             Copy of the original with coordinates converted to the WCS
             world system.
 
@@ -129,21 +133,20 @@ class Geo(object):
         return Geo(geo, attrs=attrs)
 
     def world2pix(self, hdr):
-        """
-        Return a copy with coordinates converted to the pixel system.
+        """Return a copy with coordinates converted to the pixel system.
 
         Any attributes describing the coordinate system of the item must be
         updated manually!
 
         Parameters
         ----------
-        hdr : astropy.io.fits.Header
+        hdr : `astropy.io.fits.Header`
             Transform coordinates according to the WCS information in the
             FITS header.
 
         Returns
         -------
-        out : Geo
+        out : `Geo`
             Copy of the original with coordinates converted to the pixel
             system.
 
@@ -159,8 +162,7 @@ class Geo(object):
         return Geo(geo, attrs=attrs)
 
     def translate(self, dx, dy):
-        """
-        Return a copy with coordinates translated by dx and dy.
+        """Return a copy with coordinates translated by `dx` and `dy`.
 
         Parameters
         ----------
@@ -169,8 +171,9 @@ class Geo(object):
 
         Returns
         -------
-        out : Geo
-            Copy of the original with coordinates translated by dx and dy.
+        out : `Geo`
+            Copy of the original with coordinates translated by `dx` and
+            `dy`.
 
         """
         if self.geo is None:
@@ -184,12 +187,11 @@ class Geo(object):
         return Geo(geo, attrs=attrs)
 
     def copy(self):
-        """
-        Return a deep copy.
+        """Return a deep copy.
 
         Returns
         -------
-        out : Geo instance
+        out : `Geo`
             Deep copy of the original.
 
         Notes
@@ -197,7 +199,7 @@ class Geo(object):
         The geometry object is copied by computing its union with a null
         geometry. As a result, the coordinates of this copy may be
         reordered from the original and string representations would not be
-        equal. The attrs instance variable is copied as an OrderedDict
+        equal. The `attrs` instance variable is copied as an `OrderedDict`
         (unless it is None).
 
         """
@@ -214,39 +216,38 @@ class Geo(object):
 
 class Item(object):
 
-    """
-    Container for a group of Geo instances.
+    """Container for a group of `Geo` instances.
 
-    Store any number of Geo class instances and a set of attributes. This
+    Store any number of `Geo` class instances and a set of attributes. This
     class represents the intermediate unit in the geoset specification (see
-    the Geoset class for an overview).
+    the `Geoset` class for an overview).
 
     Parameters
     ----------
-    geos : list, tuple, Geo, or None
-        Initialize the geos instance variable using either a list or tuple
-        of zero or more Geo instances, a single Geo instance (will
-        automatically be turned into a list of length 1), or None.
+    geos : list, tuple, `Geo`, or None
+        Initialize the `geos` instance variable using either a list or
+        tuple of zero or more `Geo` instances, a single `Geo` instance
+        (will automatically be turned into a list of length 1), or None.
     attrs : optional
-        Initialize the attrs instance variable. Default value is None.
+        Initialize the `attrs` instance variable. Default value is None.
 
     Attributes
     ----------
     geos : list
-        List of zero or more Geo instances.
+        List of zero or more `Geo` instances.
     attrs : dict-like or None
-        Attributes as key-value pairs (typically an OrderedDict). None if
+        Attributes as key-value pairs (typically an `OrderedDict`). None if
         no attributes.
 
     Methods
     -------
-    pix2world(hdr)
+    pix2world
         Return a copy with coordinates converted to the WCS world system.
-    world2pix(hdr)
+    world2pix
         Return a copy with coordinates converted to the pixel system.
-    translate(dx, dy)
+    translate
         Return a copy with coordinates translated by dx and dy.
-    copy()
+    copy
         Return a deep copy.
 
     """
@@ -291,21 +292,21 @@ class Item(object):
         return '\n'.join(lines)
 
     def pix2world(self, hdr):
-        """
-        Return a copy with coordinates converted to the WCS world system.
+        """Return a copy with coordinates converted to the WCS world
+        system.
 
         Any attributes describing the coordinate system of the item must be
         updated manually!
 
         Parameters
         ----------
-        hdr : astropy.io.fits.Header
+        hdr : `astropy.io.fits.Header`
             Transform coordinates according to the WCS information in the
             FITS header.
 
         Returns
         -------
-        out : Item
+        out : `Item`
             Copy of the original with coordinates converted to the WCS
             world system.
 
@@ -318,21 +319,20 @@ class Item(object):
         return Item(geos, attrs=attrs)
 
     def world2pix(self, hdr):
-        """
-        Return a copy with coordinates converted to the pixel system.
+        """Return a copy with coordinates converted to the pixel system.
 
         Any attributes describing the coordinate system of the item must be
         updated manually!
 
         Parameters
         ----------
-        hdr : astropy.io.fits.Header
+        hdr : `astropy.io.fits.Header`
             Transform coordinates according to the WCS information in the
             FITS header.
 
         Returns
         -------
-        out : Item
+        out : `Item`
             Copy of the original with coordinates converted to the pixel
             system.
 
@@ -345,8 +345,7 @@ class Item(object):
         return Item(geos, attrs=attrs)
 
     def translate(self, dx, dy):
-        """
-        Return a copy with coordinates translated by dx and dy.
+        """Return a copy with coordinates translated by `dx` and `dy`.
 
         Parameters
         ----------
@@ -355,8 +354,9 @@ class Item(object):
 
         Returns
         -------
-        out : Item
-            Copy of the original with coordinates translated by dx and dy.
+        out : `Item`
+            Copy of the original with coordinates translated by `dx` and
+            `dy`.
 
         """
         geos = [geo.translate(dx, dy) for geo in self.geos]
@@ -367,12 +367,11 @@ class Item(object):
         return Item(geos, attrs=attrs)
 
     def copy(self):
-        """
-        Return a deep copy.
+        """Return a deep copy.
 
         Returns
         -------
-        out : Item instance
+        out : `Item`
             Deep copy of the original.
 
         Notes
@@ -380,8 +379,8 @@ class Item(object):
         Each geometry object is copied by computing its union with a null
         geometry. As a result, the coordinates of a copy may be reordered
         from the original and string representations would not be equal.
-        Each attrs instance variable is copied as an OrderedDicts (unless
-        it is None).
+        Each `attrs` instance variable is copied as an `OrderedDicts`
+        (unless it is None).
 
         """
         geos = [geo.copy() for geo in self.geos]
@@ -394,97 +393,94 @@ class Item(object):
 
 class Geoset(object):
 
-    """
-    Container for a group of Item instances.
+    """Container for a group of `Item` instances.
 
-    This class defines a custom data structure called a geoset
-    that enables basic grouping and attribution of objects from the
-    geometry subpackage of shapely (e.g. polygons, lines, and points). The
-    geoset structure is a simple tree-like hierarchy of nested classes, and
-    is implemented as follows:
-
-    =========== ====== ====== ======
-    level       1      2      3
-    ----------- ------ ------ ------
-    class       Geoset Item   Geo
-    ----------- ------ ------ ------
-    container   .items .geos  .geo
-    ----------- ------ ------ ------
-    attributes  .attrs .attrs .attrs
-    ----------- ------ ------ ------
-    FITS header .hdr
-    =========== ====== ====== ======
-
-    A single geometry object is contained with its specific attributes in a
-    Geo instance. Multiple (possibly related) Geo instances are grouped
-    together in an Item instance, along with a set of attributes specific
-    to the group. The Geoset class contains a set of Item instances. The
-    geoset as a whole may carry a set attributes, as well as a FITS header
-    (an astropy.io.fits.Header instance; particularly useful if the
-    geometries are all specified in pixel coordinates). All attribute sets
-    are dict-like, typically OrderedDict instances. See the Item and Geo
-    classes for further details.
+    This class defines a custom data structure called a geoset that enables
+    basic grouping and attribution of objects from `shapely.geometry` (e.g.
+    `Polygons`).
 
     Parameters
     ----------
-    items : list, tuple, Item, or None
-        Initialize the items instance variable using either a list or tuple
-        of zero or more Item instances, a single Item instance, or None.
+    items : list, tuple, `Item`, or None
+        Initialize the `items` instance variable using either a list or
+        tuple of zero or more `Item` instances, a single `Item` instance,
+        or None.
     attrs : optional
-        Initialize the attrs instance variable. Default value is None.
+        Initialize the `attrs` instance variable. Default value is None.
     hdr : optional
-        Initialize the hdr instance variable. Default value is None.
+        Initialize the `hdr` instance variable. Default value is None.
 
     Attributes
     ----------
     items : list
-        List of zero or more Item instances.
-    geos : list
-        List of all Geo instances in the tree. This is a read-only attribute;
-        setting and deleting members in this list are not supported.
+        List of zero or more `Item` instances.
     attrs : dict-like or None
-        Attributes as key-value pairs (typically an OrderedDict). None if
+        Attributes as key-value pairs (typically an `OrderedDict`). None if
         no attributes.
-    hdr : astropy.io.fits.header.Header or None
+    hdr : `astropy.io.fits.header.Header` or None
         FITS header that relates to the stored geometries, e.g. WCS
         information for transforming between pixel and sky coordinates.
         None if no header.
 
     Methods
     -------
-    pix2world(hdr=None)
+    geos
+        Return a complete listing of `Geo` instances in the tree.
+    pix2world
         Return a copy with coordinates converted to the WCS world system.
-    workd2pix(hdr=None)
+    world2pix
         Return a copy with coordinates converted to the pixel system.
-    translate(dx, dy)
+    translate
         Return a copy with coordinates translated by dx and dy.
-    copy()
+    copy
         Return a deep copy.
 
     Notes
     -----
-    A typical use case would be for storing polygons of regions identified
-    in an image. The FITS image header and any "global" attributes of the
-    region set could be stored in a Geoset, along with a list of Item
-    instances, where an "item" in this case could mean an individual
-    region. Each Item might contain some attributes describing the specific
-    region (name, etc.), and then a list of Geo instances, each of which
-    contains a polygon object (and even more attributes, if needed). The
-    number of Geo instances assigned to each item/region depends on the
-    complexity of the region; simple regions described by a single polygon
-    would only require one Geo instance.
+    The geoset structure is a simple tree-like hierarchy of nested classes,
+    and is implemented as follows:
 
-    There is considerable flexibility in assigning multiple geometry
-    objects to an item. Any number of Geo instances are allowed within an
-    Item, while the shapely.geometry subpackage supports various "multi"
-    geometry objects and collections, such as MultiPolygon. It is therefore
-    possible for an item to have several Geo instances, each with a
-    different geometry type, including collections, MultiPolygons, etc.
+    =========== ======== ====== ======
+    level       1        2      3
+    =========== ======== ====== ======
+    class       `Geoset` `Item` `Geo`
+    container   .items   .geos  .geo
+    attributes  .attrs   .attrs .attrs
+    FITS header .hdr
+    =========== ======== ====== ======
+
+    A single geometry object is contained with its specific attributes in a
+    `Geo` instance. Multiple (possibly related) `Geo` instances are grouped
+    together in an `Item` instance, along with a set of attributes specific
+    to the group. The `Geoset` class contains a set of `Item` instances.
+    The geoset as a whole may carry a set attributes, as well as a FITS
+    header (an `astropy.io.fits.Header` instance; particularly useful if
+    the geometries are all specified in pixel coordinates). All attribute
+    sets are dict-like, typically `OrderedDict` instances. See the `Item`
+    and `Geo` classes for further details.
+
+    There is some flexibility in how geometry objects are assigned to an
+    item. Any number of `Geo` instances are allowed within an `Item`, while
+    the `shapely.geometry` subpackage supports various "multi" geometry
+    objects and collections, such as `MultiPolygon`. It is therefore
+    possible for an item to have several `Geo` instances, each with a
+    different geometry type, including collections, `MultiPolygons`, etc.
+
+    A typical use is storing polygons of regions identified in an image.
+    The FITS image header and any "global" attributes of the region set
+    could be stored in a `Geoset`, along with a list of `Item` instances,
+    where an "item" in this case could mean an individual region. Each
+    `Item` might contain some attributes describing the specific region
+    (name, etc.), and then a list of `Geo` instances, each of which
+    contains a polygon object (and even more attributes, if needed). The
+    number of `Geo` instances assigned to each item/region depends on the
+    complexity of the region; simple regions described by a single polygon
+    would only require one `Geo` instance.
 
     Examples
     --------
     To build a geoset from scratch given a single geometry object (e.g. a
-    shapely.geometry.Polygon instance, ``poly``),
+    `shapely.geometry.Polygon` instance, ``poly``),
 
     >>> geo = Geo(poly)
     >>> item = Item(geo)
@@ -538,22 +534,22 @@ class Geoset(object):
         return '\n'.join(lines)
 
     def pix2world(self, hdr=None):
-        """
-        Return a copy with coordinates converted to the WCS world system.
+        """Return a copy with coordinates converted to the WCS world
+        system.
 
-        Any attributes describing the coordinate system of the geoset must be
-        updated manually!
+        Any attributes describing the coordinate system of the geoset must
+        be updated manually!
 
         Parameters
         ----------
-        hdr : astropy.io.fits.Header or None, optional
+        hdr : `astropy.io.fits.Header` or None, optional
             Transform coordinates according to the WCS information in the
             FITS header. If None, the header stored in the geoset is used.
             Default value is None.
 
         Returns
         -------
-        out : Geoset
+        out : `Geoset`
             Copy of the original with coordinates converted to the WCS
             world system.
 
@@ -572,22 +568,21 @@ class Geoset(object):
         return Geoset(items, attrs=attrs, hdr=hdr)
 
     def world2pix(self, hdr=None):
-        """
-        Return a copy with coordinates converted to the pixel system.
+        """Return a copy with coordinates converted to the pixel system.
 
-        Any attributes describing the coordinate system of the geoset must be
-        updated manually!
+        Any attributes describing the coordinate system of the geoset must
+        be updated manually!
 
         Parameters
         ----------
-        hdr : astropy.io.fits.Header or None, optional
+        hdr : `astropy.io.fits.Header` or None, optional
             Transform coordinates according to the WCS information in the
             FITS header. If None, the header stored in the geoset is used.
             Default value is None.
 
         Returns
         -------
-        out : Geoset
+        out : `Geoset`
             Copy of the original with coordinates converted to the pixel
             system.
 
@@ -606,8 +601,7 @@ class Geoset(object):
         return Geoset(items, attrs=attrs, hdr=hdr)
 
     def translate(self, dx, dy):
-        """
-        Return a copy with coordinates translated by dx and dy.
+        """Return a copy with coordinates translated by dx and dy.
 
         Parameters
         ----------
@@ -616,8 +610,9 @@ class Geoset(object):
 
         Returns
         -------
-        out : Geoset
-            Copy of the original with coordinates translated by dx and dy.
+        out : `Geoset`
+            Copy of the original with coordinates translated by `dx` and
+            `dy`.
 
         """
         items = [item.translate(dx, dy) for item in self.items]
@@ -632,12 +627,11 @@ class Geoset(object):
         return Geoset(items, attrs=attrs, hdr=hdr)
 
     def copy(self):
-        """
-        Return a deep copy.
+        """Return a deep copy.
 
         Returns
         -------
-        out : Geoset
+        out : `Geoset`
             Deep copy of the original.
 
         Notes
@@ -645,8 +639,8 @@ class Geoset(object):
         Each geometry object in the tree is copied by computing its union
         with a null geometry. As a result, the coordinates of a copy may be
         reordered from the original and string representations would not be
-        equal. Each attrs instance variable in the tree is copied as an
-        OrderedDict (unless it is None).
+        equal. Each `attrs` instance variable in the tree is copied as an
+        `OrderedDict` (unless it is None).
 
         """
         items = [item.copy() for item in self.items]
@@ -662,14 +656,15 @@ class Geoset(object):
 
     @property
     def geos(self):
-        """
-        Return a complete listing of Geo instances in the tree.
+        """Return a complete listing of `Geo` instances in the tree.
 
         This is a read-only attribute; setting and deleting members in this
         list are not supported.
 
-        Returns: list
-            A list of all Geo instances stored in the tree.
+        Returns
+        -------
+        out : list
+            A list of all `Geo` instances stored in the tree.
 
         """
         self._geos = []

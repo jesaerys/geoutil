@@ -1,27 +1,37 @@
 """
-Interface Geoset objects with files in polylist XML format.
+
+=====================
+`geoutil.polylistxml`
+=====================
+
+Interface |Geoset| instances with files in polylist XML format.
 
 This module defines the polylist XML format, an XML representation of the
 geoset data structure, and provides functionality for interfacing with the
-Geoset class. See the Geoset class for details about the geoset structure,
+|Geoset| class. See the |Geoset| class for details about the geoset structure,
 and the toxml function for the polylist XML format definition.
 
-.. note:: POLYLIST XML is the precursor of the GEOSET XML format and is
+.. note:: polylist XML is the precursor of the geoset XML format and is
    deprecated. It is retained for backwards compatibility with older
    projects.
 
 Functions
 ---------
-fromxml(polylist_xml)
-    Return a Geoset instance from a polylist XML tree.
-toxml(geoset)
-    Return a polylist XML tree from a Geoset instance.
-read(filename)
-    Return a Geoset instance from a polylist XML file.
-write(geoset, filename)
-    Write a Geoset instance to a polylist XML file.
-formatter(geoset_xml)
-    A custom XML "pretty print" formatter for polylist XML files.
+
+=============== =============================================================
+`fromxml`       Return a |Geoset| instance from a polylist XML tree.
+`toxml`         Return a polylist XML tree from a |Geoset| instance.
+`read`          Return a |Geoset| instance from a polylist XML file.
+`write`         Write a |Geoset| instance to a polylist XML file.
+`pretty_format` A custom XML "pretty print" formatter for polylist XML
+                files.
+=============== =============================================================
+
+
+.. references
+
+.. |Geo| replace:: `~geoutil._geoset.Geo`
+.. |Geoset| replace:: `~geoutil._geoset.Geoset`
 
 """
 from collections import OrderedDict
@@ -37,8 +47,7 @@ from . import _geoset
 
 
 def add_XML_attrs(attr_list, element, eformat='%.16e', fformat='%.16f'):
-    """
-    Add attributes to an XML element from a list of key-value pairs.
+    """Add attributes to an XML element from a list of key-value pairs.
 
     "Attributes" in this context means XML attributes, i.e. metadata stored
     with the tag inside an XML element. Attributes are stored as text, so
@@ -47,9 +56,9 @@ def add_XML_attrs(attr_list, element, eformat='%.16e', fformat='%.16f'):
 
     Parameters
     ----------
-    attr_dict : OrderedDict
-        OrderedDict of attributes.
-    element : Element from xml.etree.ElementTree or lxml.etree
+    attr_dict : `OrderedDict`
+        `OrderedDict` of attributes.
+    element : `Element` from `xml.etree.ElementTree` or `lxml.etree`
         XML element to which attributes are added.
     eformat, fformat : str
         Format strings controlling how scientific and decimal floats are
@@ -57,8 +66,8 @@ def add_XML_attrs(attr_list, element, eformat='%.16e', fformat='%.16f'):
 
     Notes
     -----
-    xml and lxml do not return attributes in any guaranteed order, so the
-    ordering of the input attributes list may not be preserved.
+    `xml` and `lxml` do not return attributes in any guaranteed order, so
+    the ordering of the input attributes list may not be preserved.
 
     """
     for attr, val in attr_list.items():
@@ -76,8 +85,7 @@ def add_XML_attrs(attr_list, element, eformat='%.16e', fformat='%.16f'):
 
 
 def get_XML_attrs(element):
-    """
-    Return an attribute dictionary from an XML element.
+    """Return an attribute dictionary from an XML element.
 
     "Attributes" in this context means XML attributes, i.e. metadata stored
     with the tag inside an XML element. Attributes are stored as text, so
@@ -86,17 +94,17 @@ def get_XML_attrs(element):
 
     Parameters
     ----------
-    element : Element from xml.etree.ElementTree or lxml.etree
+    element : `Element` from `xml.etree.ElementTree` or `lxml.etree`
         XML element containing attributes.
 
     Returns
     -------
-    out : OrderedDict
-        An OrderedDict of the attributes stored in element.
+    out : `OrderedDict`
+        An `OrderedDict` of the attributes stored in element.
 
     Notes
     -----
-    xml and lxml do not return attributes in any guaranteed order!
+    `xml` and `lxml` do not return attributes in any guaranteed order!
 
     """
     attr_list = []
@@ -117,26 +125,25 @@ def get_XML_attrs(element):
 
 
 def fromxml(polylist_xml):
-    """
-    Convert a polylist XML tree to a Geoset instance.
+    """Convert a polylist XML tree to a |Geoset| instance.
 
-    See toxml for details about the polylist XML format.
+    See `toxml` for details about the polylist XML format.
 
     Parameters
     ----------
-    polylist_xml : Element from xml.etree.ElementTree or lxml.etree
+    polylist_xml : `Element` from `xml.etree.ElementTree` or `lxml.etree`
         The root element of an XML tree in polylist XML format.
 
     Returns
     -------
-    out : Geoset
-        A Geoset instance build using the items, geometries,
+    out : |Geoset|
+        A |Geoset| instance build using the items, geometries,
         attributes, and FITS header information stored in polylist_xml.
 
     Notes
     -----
-    Text contained in POLY subelements of the XML tree is processed using the
-    wkt.loads function to form shapely.geometry objects.
+    Text contained in ``POLY`` subelements of the XML tree is processed
+    using the `wkt.loads` function to form `shapely.geometry` objects.
 
     """
     attrs = get_XML_attrs(polylist_xml)
@@ -165,11 +172,10 @@ def fromxml(polylist_xml):
 
 
 def read(filename):
-    """
-    Create a Geoset instance from a polylist XML file.
+    """Create a |Geoset| instance from a polylist XML file.
 
-    Uses the fromxml function to parse the XML tree after the file is
-    loaded. See fromxml for details.
+    Uses `fromxml` to parse the XML tree after the file is loaded. See
+    `fromxml` for details.
 
     Parameters
     ----------
@@ -178,8 +184,8 @@ def read(filename):
 
     Returns
     -------
-    out : Geoset
-        A Geoset instance build using the items, geometries,
+    out : |Geoset|
+        A |Geoset| instance build using the items, geometries,
         attributes, and FITS header information stored in the polylist XML
         file.
 
@@ -189,10 +195,9 @@ def read(filename):
 
 
 def toxml(geoset):
-    """
-    Convert a Geoset instance to a polylist XML tree.
+    """Convert a |Geoset| instance to a polylist XML tree.
 
-    The geoset structure (see the Geoset class) can be represented in XML
+    The geoset structure (see the |Geoset| class) can be represented in XML
     as follows; this defines the polylist XML format::
 
       <POLYLIST ...>
@@ -204,34 +209,32 @@ def toxml(geoset):
         ...
       </POLYLIST>
 
-    POLYLIST
-        Subelements: HEADER and zero or more ITEM elements.
-        XML attributes (optional)
-    ITEM
-        Subelements: zero or more POLY elements.
-        XML attributes (optional)
-    POLY
-        Text (optional): WKT (well-known text) representation of a
-        shapely.geometry geometry class instance.
-        XML attributes (optional)
-    HEADER
-        XML attributes (optional)
+    ============ ==========================================================
+    ``POLYLIST`` Subelements: ``HEADER`` and zero or more ``ITEM``
+                 elements. XML attributes (optional)
+    ``ITEM``     Subelements: zero or more ``POLY`` elements. XML
+                 attributes (optional)
+    ``POLY``     Text (optional): WKT (well-known text) representation of a
+                 `shapely.geometry geometry` class instance. XML attributes
+                 (optional)
+    ``HEADER``   XML attributes (optional)
+    ============ ==========================================================
 
     Parameters
     ----------
-    geoset : Geoset
-        A Geoset instance from which to build an XML tree.
+    geoset : |Geoset|
+        A |Geoset| instance from which to build an XML tree.
 
     Returns
     -------
-    out : Element from xml.etree.ElementTree or lxml.etree
+    out : `Element` from `xml.etree.ElementTree` or `lxml.etree`
         A polylist XML tree build using the items, geometries, attributes,
-        and FITS header stored in the provided Geoset instance.
+        and FITS header stored in the provided |Geoset| instance.
 
     Notes
     -----
-    shapely.geometry objects are serialized to WKT strings using the
-    wkt.dumps function.
+    `shapely.geometry` objects are serialized to WKT strings using the
+    `wkt.dumps` function.
 
     """
     geoset_xml = etree.Element('POLYLIST')
@@ -260,8 +263,7 @@ def toxml(geoset):
 
 
 def pretty_format(elem, level=0, indent='  '):
-    """
-    "Pretty print" formatter for XML files.
+    """"Pretty print" formatter for XML files.
 
     Recursively edits newlines and spaces in text and tails of subelements
     in the XML tree. There is no return value; the provided XML tree is
@@ -269,7 +271,7 @@ def pretty_format(elem, level=0, indent='  '):
 
     Parameters
     ----------
-    elem : ElementTree or Element from xml.etree.ElementTree or lxml.etree
+    elem : `ElementTree` or `Element` from `xml.etree.ElementTree` or `lxml.etree`
         All subelements of this XML element are formatted.
 
     """
@@ -291,16 +293,15 @@ def pretty_format(elem, level=0, indent='  '):
 
 
 def write(geoset, filename):
-    """
-    Write a Geoset instance to a polylist XML file.
+    """Write a |Geoset| instance to a polylist XML file.
 
-    Uses the toxml function to form an XML tree which is then written to
-    file. See toxml for details.
+    Uses `toxml` to form an XML tree which is then written to file. See
+    `toxml` for details.
 
     Parameters
     ----------
-    geoset : Geoset
-        The input Geoset instance.
+    geoset : |Geoset|
+        The input |Geoset| instance.
     filename : str
         Destination path of the output polylist XML file.
 

@@ -1,25 +1,33 @@
 """
+
+================
+`geoutil._utils`
+================
+
 General-purpose geometry utilities.
 
 Functions
 ---------
-validate_poly(poly, poly_buffer=0)
-    Test if a a polygon is valid and attempt to fix it if not.
-poly_pix2world(poly_list, hdr_list)
-    Convert polygon vertices from pixel coordinates to world coordinates.
-poly_world2pix(poly_list, hdr_list)
-    Convert polygon vertices from world coordinates to pixel coordinates.
-poly_translate(poly_list, dx_list, dy_list)
-    Translate polygon coordinates by dx and dy.
-clean_poly(poly)
-    Remove extraneous geometries from a polygon.
-safe_difference(poly1, poly2)
-    Wrapper for poly1.difference(poly2) with some extra functionality to
-    handle strange cases where it fails.
-plot_poly(poly, ax=None, f='k-')
-    Convenience function for plotting polygons.
-consolidate_polys(poly_list, hole_list=None)
-    Turn a list of polygons into a single, multi-polygon object.
+
+=================== ==========================================================
+`validate_poly`     Test if a a polygon is valid and attempt to fix it if not.
+`poly_pix2world`    Convert polygon vertices from pixel coordinates to
+                    world coordinates.
+`poly_world2pix`    Convert polygon vertices from world coordinates to
+                    pixel coordinates.
+`poly_translate`    Translate polygon coordinates by dx and dy.
+=================== ==========================================================
+
+.. rubric:: Miscellaneous functions
+
+=================== ==========================================================
+`clean_poly`        Remove extraneous geometries from a polygon.
+`safe_difference`   Wrapper for ``poly1.difference(poly2)`` with some extra
+                    functionality to handle strange cases where it fails.
+`plot_poly`         Convenience function for plotting polygons.
+`consolidate_polys` Turn a list of polygons into a single, multi-polygon
+                    object.
+=================== ==========================================================
 
 """
 from astropy.io import fits
@@ -36,27 +44,28 @@ _PROBLEMATIC_KEYS = ['CPDIS1', 'CPDIS2']
 def validate_poly(poly, poly_buffer=0):
     """Test if a a polygon is valid and attempt to fix it if not.
 
-    The buffer method of shapely.geometry objects is used to attempt to fix
-    any problems causing a polygon to be invalid, such as pinch points or
-    self-crossings.
+    The `buffer` method of `shapely.geometry` objects is used to attempt to
+    fix any problems causing a polygon to be invalid, such as pinch points
+    or self-crossings.
 
     Parameters
     ----------
-    poly : shapely.geometry.Polygon or shapely.geometry.MultiPolygon
+    poly : `shapely.geometry.Polygon` or `shapely.geometry.MultiPolygon`
         The polygon to be validated.
     poly_buffer : int or float
-        The amount by which poly should be buffered if it is invalid. The
+        The amount by which `poly` should be buffered if it is invalid. The
         default value of 0 will join polygons that overlap in a
-        MultiPolygon, and split a Polygon into two where it pinches in on
-        itself. Note that for an ACS image, setting poly_buffer = 1e-10 deg
-        corresponds to changing each vertex by little less than 1e-5 pixels.
-
+        `MultiPolygon`, and split a `Polygon` into two where it pinches in
+        on itself. Note that for an ACS image, setting `poly_buffer` to
+        1e-10 deg corresponds to changing each vertex by little less than
+        1e-5 pixels.
 
     Returns
     -------
-    out : shapely.geometry.Polygon or shapely.geometry.MultiPolygon
+    out : `shapely.geometry.Polygon` or `shapely.geometry.MultiPolygon`
         A validated polygon; it will not necessarily have the same type as
-        the input polygon, i.e. Polygons can turn into MultiPolygons, etc.
+        the input polygon, e.g., a `Polygon` can turn into a
+        `MultiPolygon`, etc.
 
     """
     if not poly.is_valid:
@@ -69,25 +78,25 @@ def poly_pix2world(poly_list, hdr_list):
 
     Vertices are converted from pixel coordinates to world coordinates
     according to the WCS information stored in the provided FITS image
-    header(s) using astropy.wcs.
+    header(s) using `astropy.wcs`.
 
     Parameters
     ----------
     poly_list : list
-        List of zero or more shapely.geometry.Polygon or
-        shapely.geometry.MultiPolygon instances.
-    hdr_list : astropy.io.fits.Header or list or None
-        Either a single astropy.io.fits.Header instance or a list of zero
+        List of zero or more `shapely.geometry.Polygon` or
+        `shapely.geometry.MultiPolygon` instances.
+    hdr_list : `astropy.io.fits.Header`, list, or None
+        Either a single `astropy.io.fits.Header` instance or a list of zero
         or more. If only one header is given, it is used for all of the
         coordinate conversions. If a list is given, then there must be one
-        header for each polygon in poly_list. If None, then no conversion
+        header for each polygon in `poly_list`. If None, then no conversion
         is performed.
 
     Returns
     -------
     out : list
-        Same as poly_list, but with all coordinates converted to the world
-        system according to the provided header(s).
+        Same as `poly_list`, but with all coordinates converted to the
+        world system according to the provided header(s).
 
     """
     def convert(poly, hwcs):
@@ -130,25 +139,25 @@ def poly_world2pix(poly_list, hdr_list):
 
     Vertices are converted from world coordinates to pixel coordinates
     according to the WCS information stored in the provided FITS image
-    header(s) using astropy.wcs.
+    header(s) using `astropy.wcs`.
 
     Parameters
     ----------
     poly_list : list
-        List of zero or more shapely.geometry.Polygon or
-        shapely.geometry.MultiPolygon instances.
-    hdr_list : astropy.io.fits.Header or list or None
-        Either a single astropy.io.fits.Header instance or a list of zero
+        List of zero or more `shapely.geometry.Polygon` or
+        `shapely.geometry.MultiPolygon` instances.
+    hdr_list : `astropy.io.fits.Header`, list, or None
+        Either a single `astropy.io.fits.Header` instance or a list of zero
         or more. If only one header is given, it is used for all of the
         coordinate conversions. If a list is given, then there must be one
-        header for each polygon in poly_list. If None, then no conversion
+        header for each polygon in `poly_list`. If None, then no conversion
         is performed.
 
     Returns
     -------
     out : list
-        Same as poly_list, but with all coordinates converted to the pixel
-        system according to the provided header(s).
+        Same as `poly_list`, but with all coordinates converted to the
+        pixel system according to the provided header(s).
 
     """
     def convert(poly, hwcs):
@@ -192,18 +201,19 @@ def poly_translate(poly_list, dx_list, dy_list):
     Parameters
     ----------
     poly_list : list
-        List of zero or more shapely.geometry.Polygon or
-        shapely.geometry.MultiPolygon instances.
+        List of zero or more `shapely.geometry.Polygon` or
+        `shapely.geometry.MultiPolygon` instances.
     dx_list, dy_list : int or float or list or None
         The shift to be applied in the x or y direction, or a list of zero
         or more shifts. If only one shift is given, it is used for all
         polygons. If a list is given, then there must be one shift for each
-        polygon in poly_list. None is treated as equivalent to 0.
+        polygon in `poly_list`. None is treated as equivalent to 0.
 
     Returns
     -------
     out : list
-        Same as poly_list, but with all coordinates translated by dx and dy.
+        Same as `poly_list`, but with all coordinates translated by dx and
+        dy.
 
     """
     def convert(poly, dx, dy):
@@ -243,7 +253,7 @@ def clean_poly(poly):
 
     Performing a series of set-theoretic operations on a polygon can result
     in some extraneous objects, e.g., an empty polygon embedded in a
-    MultiPolygon. This function looks for such objects and removes them.
+    `MultiPolygon`. This function looks for such objects and removes them.
 
     """
     if poly.type == 'Polygon':
@@ -262,8 +272,8 @@ def clean_poly(poly):
 
 
 def safe_difference(poly1, poly2):
-    """Wrapper for poly1.difference(poly2) with some extra functionality to
-    handle strange cases where it fails.
+    """Wrapper for ``poly1.difference(poly2)`` with some extra
+    functionality to handle strange cases where it fails.
 
     """
     try:
@@ -282,7 +292,7 @@ def safe_difference(poly1, poly2):
 def plot_poly(poly, ax=None, f='k-'):
     """Convenience function for plotting polygons.
 
-    Requires matplotlib.
+    Requires `matplotlib`.
 
     """
     from matplotlib import pyplot as plt
@@ -308,25 +318,25 @@ def plot_poly(poly, ax=None, f='k-'):
 def consolidate_polys(poly_list, hole_list=None):
     """Turn a list of polygons into a single, multi-polygon object.
 
-    After forming the main polygon from poly_list, polygons in hole_list
+    After forming the main polygon from `poly_list`, polygons in `hole_list`
     are subtracted from it to create holes. If a hole does not actually lie
     inside of the main polygon, it is added instead of subtracted.
 
     Parameters
     ----------
     poly_list : list
-        List of zero or more shapely.geometry.Polygon or
-        shapely.geometry.MultiPolygon instances to consolidate.
+        List of zero or more `shapely.geometry.Polygon` or
+        `shapely.geometry.MultiPolygon` instances to consolidate.
     hole_list : list, optional
         List of zero or more polygons defining holes. Default is None (no
         holes).
 
     Returns
     -------
-    out : shapely.geometry.MultiPolygon, shapely.geometry.Polygon, or None
-        A MultiPolygon or Polygon representing the superposition of all
-        polygons and holes in poly_list and hole_list, or None if poly_list
-        and hole_list are both empty.
+    out : `shapely.geometry.MultiPolygon`, `shapely.geometry.Polygon`, or None
+        A `MultiPolygon` or `Polygon` representing the superposition of all
+        polygons and holes in `poly_list` and `hole_list`, or None if
+        `poly_list` and `hole_list` are both empty.
 
     """
     if not poly_list:

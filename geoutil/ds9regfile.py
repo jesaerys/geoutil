@@ -1,19 +1,31 @@
 """
-Interface Geoset objects with files in DS9 region format.
 
-This module provides functionality for interfacing the Geoset class with
-DS9 region files. See the Geoset class for details about the geoset
+====================
+`geoutil.ds9regfile`
+====================
+
+Interface |Geoset| instances with files in DS9 region format.
+
+This module provides functionality for interfacing the |Geoset| class with
+DS9 region files. See the |Geoset| class for details about the geoset
 structure.
 
-.. note:: Geoset instances cannot be fully represented in DS9 format. See
-   the write function for details.
+.. note:: |Geoset| instances cannot be fully represented in DS9 format. See
+   `write` for details.
 
 Functions
 ---------
-read(filename)
-    Create a Geoset instance from a DS9 region file.
-write(geoset, filename, coordsys=None, fmt='.15f')
-    Write a Geoset instance to a DS9 region file.
+
+======= ==================================================
+`read`  Create a |Geoset| instance from a DS9 region file.
+`write` Write a |Geoset| instance to a DS9 region file.
+======= ==================================================
+
+
+.. references
+
+.. |Geo| replace:: `~geoutil._geoset.Geo`
+.. |Geoset| replace:: `~geoutil._geoset.Geoset`
 
 """
 from collections import OrderedDict
@@ -25,11 +37,10 @@ from . import _geoset
 
 
 def read(filename):
-    """
-    Create a Geoset instance from a DS9 region file.
+    """Create a |Geoset| instance from a DS9 region file.
 
-    .. note:: This will break if the region file was not written using the
-       write function in this module!
+    .. note:: This will break if the region file was not written using
+       `write`!
 
     Parameters
     ----------
@@ -38,8 +49,8 @@ def read(filename):
 
     Returns
     -------
-    out : Geoset
-        A Geoset instance build using the polygons stored in the DS9 region
+    out : |Geoset|
+        A |Geoset| instance build using the polygons stored in the DS9 region
         file.
 
     """
@@ -128,22 +139,22 @@ def read(filename):
 
 
 def write(geoset, filename, coordsys=None, fmt='.15f'):
-    """
-    Write a Geoset instance to a DS9 region file.
+    """Write a |Geoset| instance to a DS9 region file.
 
     The structure of the input geoset is preserved using DS9 tags with
     item, geo, and poly numbers (poly number is useful for grouping
-    together members of a MultiPolygon within a Geo instance and keeping
+    together members of a MultiPolygon within a |Geo| instance and keeping
     holes associated with a polygon). Polygon holes are identified by the
     background attribute keyword. DS9 format is somewhat limited, so there
     are probably cases where a DS9 region file written using this function
-    does not perfectly represent the original Polygon/MultiPolygon objects.
-    Attributes within the geoset tree and FITS headers are not written!
+    does not perfectly represent the original `Polygon` / `MultiPolygon`
+    objects. Attributes within the geoset tree and FITS headers are not
+    written!
 
     Parameters
     ----------
-    geoset : Geoset
-        The input Geoset instance.
+    geoset : |Geoset|
+        The input |Geoset| instance.
     filename : str
         Destination path of the output DS9 region file.
     coordsys : {None|'physical'|'fk5'}, optional

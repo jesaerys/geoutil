@@ -1,23 +1,32 @@
 """
-Interface Geoset objects with files in geoset XML format.
+
+===================
+`geoutil.geosetxml`
+===================
+
+Interface |Geoset| instances with files in geoset XML format.
 
 This module defines the geoset XML format, an XML representation of the
 geoset data structure, and provides functionality for interfacing with the
-Geoset class. See the Geoset class for details about the geoset structure,
-and the toxml function for the geoset XML format definition.
+|Geoset| class. See the |Geoset| class for details about
+the geoset structure, and the `toxml` function for the geoset XML format
+definition.
 
 Functions
 ---------
-fromxml(geoset_xml)
-    Return a Geoset instance from a geoset XML tree.
-toxml(geoset)
-    Return a geoset XML tree from a Geoset instance.
-read(filename)
-    Return a Geoset instance from a geoset XML file.
-write(geoset, filename)
-    Write a Geoset instance to a geoset XML file.
-formatter(geoset_xml)
-    A custom XML "pretty print" formatter for geoset XML files.
+
+=========== ===============================================================
+`fromxml`   Return a |Geoset| instance from a geoset XML tree.
+`toxml`     Return a geoset XML tree from a |Geoset| instance.
+`read`      Return a |Geoset| instance from a geoset XML file.
+`write`     Write a |Geoset| instance to a geoset XML file.
+`formatter` A custom XML "pretty print" formatter for geoset XML files.
+=========== ===============================================================
+
+
+.. references
+
+.. |Geoset| replace:: `~geoutil._geoset.Geoset`
 
 """
 from collections import OrderedDict
@@ -34,38 +43,35 @@ from . import _geoset
 
 
 def fromxml(geoset_xml):
-    """
-    Convert a geoset XML tree to a Geoset instance.
+    """Convert a geoset XML tree to a |Geoset| instance.
 
-    See toxml for details about the geoset XML format.
+    See `toxml` for details about the geoset XML format.
 
     Parameters
     ----------
-    geoset_xml : Element from xml.etree.ElementTree or lxml.etree
+    geoset_xml : `Element` from `xml.etree.ElementTree` or `lxml.etree`
         The root element of an XML tree in geoset XML format.
 
     Returns
     -------
-    out : Geoset
-        A Geoset instance built using the items, geometries,
-        attributes, and FITS header information stored in geoset_xml.
+    out : |Geoset|
+        A |Geoset| instance built using the items, geometries, attributes,
+        and FITS header information stored in `geoset_xml`.
 
     Notes
     -----
     Text contained in subelements of the XML tree is processed using the
     following functions:
 
-      =========== ============== =================
-      XML element text format    parsing function
-      =========== ============== =================
-      <WKT>       WKT            wkt.loads
-      ----------- -------------- -----------------
-      <ATTR>      JSON array     json.loads
-      ----------- -------------- -----------------
-      <HEADER>    single string  Header.fromstring
-      =========== ============== =================
+    ============ ============= ===================
+    XML element  text format   parsing function
+    ============ ============= ===================
+    ``<WKT>``    WKT           `wkt.loads`
+    ``<ATTR>``   JSON array    `json.loads`
+    ``<HEADER>`` single string `Header.fromstring`
+    ============ ============= ===================
 
-    Note that strings returned by json are always unicode strings.
+    Note that strings returned by `json` are always unicode strings.
 
     """
     attrs = geoset_xml[0].text
@@ -100,11 +106,10 @@ def fromxml(geoset_xml):
 
 
 def read(filename):
-    """
-    Create a Geoset instance from a geoset XML file.
+    """Create a |Geoset| instance from a geoset XML file.
 
-    Uses the fromxml function to parse the XML tree after the file is
-    loaded. See fromxml for details.
+    Uses `fromxml` to parse the XML tree after the file is loaded. See
+    `fromxml` for details.
 
     Parameters
     ----------
@@ -113,10 +118,9 @@ def read(filename):
 
     Returns
     -------
-    out : Geoset
-        A Geoset instance build using the items, geometries,
-        attributes, and FITS header information stored in the geoset XML
-        file.
+    out : |Geoset|
+        A |Geoset| instance build using the items, geometries, attributes,
+        and FITS header information stored in the geoset XML file.
 
     """
     geoset_xml = etree.parse(filename).getroot()
@@ -124,10 +128,9 @@ def read(filename):
 
 
 def toxml(geoset):
-    """
-    Convert a Geoset instance to a geoset XML tree.
+    """Convert a |Geoset| instance to a geoset XML tree.
 
-    The geoset structure (see the Geoset class) can be represented in
+    The geoset structure (see the |Geoset| class) can be represented in
     geoset XML format, defined as follows::
 
       <GEOSET>
@@ -141,51 +144,46 @@ def toxml(geoset):
         ...
       </GEOSET>
 
-    GEOSET
-        Subelements: ATTR, HEADER, zero or more ITEM elements.
-    ITEM
-        Subelements: ATTR, zero or more GEO elements.
-    GEO
-        Subelements: ATTR, WKT.
-    ATTR
-        Text (optional): attributes specified as an array of key-value
-        pairs in JSON format, ``[[key1, val1], ...]``.
-    HEADER
-        Text (optional): FITS header represented as a single string, i.e.
-        80-character sections (one section per header keyword) joined
-        without line breaks.
-    WKT
-        Text (optional): WKT (well-known text) representation of a
-        shapely.geometry geometry class instance.
+    ========== ============================================================
+    ``GEOSET`` Subelements: ``ATTR``, ``HEADER``, zero or more ``ITEM``
+               elements.
+    ``ITEM``   Subelements: ``ATTR``, zero or more ``GEO`` elements.
+    ``GEO``    Subelements: ``ATTR``, ``WKT``.
+    ``ATTR``   Text (optional): attributes specified as an array of
+               key-value pairs in JSON format, ``[[key1, val1], ...]``.
+    ``HEADER`` Text (optional): FITS header represented as a single string,
+               i.e., 80-character sections (one section per header keyword)
+               joined without line breaks.
+    ``WKT``    Text (optional): WKT (well-known text) representation of a
+               `shapely.geometry` geometry class instance.
+    ========== ============================================================
 
     Parameters
     ----------
-    geoset : Geoset
-        A Geoset instance from which to build an XML tree.
+    geoset : |Geoset|
+        A |Geoset| instance from which to build an XML tree.
 
     Returns
     -------
-    out : Element from xml.etree.ElementTree or lxml.etree
+    out : `Element` from `xml.etree.ElementTree` or `lxml.etree``
         A geoset XML tree build using the items, geometries, attributes,
-        and FITS header stored in the provided Geoset instance.
+        and FITS header stored in the provided |Geoset| instance.
 
     Notes
     -----
-    Objects stored in a Geoset are serialized into text using the following
-    functions:
+    Objects stored in a |Geoset| are serialized into text using the
+    following functions:
 
-      ====================== =============== ==============
-      object                 serializer      text format
-      ====================== =============== ==============
-      shapely.geometry obj   wkt.dumps       WKT
-      ---------------------- --------------- --------------
-      attribute list         json.dumps      JSON array
-      ---------------------- --------------- --------------
-      astropy.io.fits.Header Header.tostring single string
-      ====================== =============== ==============
+    ======================== ================= ==============
+    object                   serializer        text format
+    ======================== ================= ==============
+    `shapely.geometry` obj   `wkt.dumps`       WKT
+    attribute list [1]_      `json.dumps`      JSON array
+    `astropy.io.fits.Header` `Header.tostring` single string
+    ======================== ================= ==============
 
-    "attribute list" is a list of key-value pairs, such as that returned by
-    dict.items().
+    .. [1] a list of key-value pairs, such as that returned by
+       ``dict.items()``.
 
     """
     geoset_xml = etree.Element('GEOSET')
@@ -219,8 +217,7 @@ def toxml(geoset):
 
 
 def formatter(geoset_xml):
-    """
-    A custom XML "pretty print" formatter for geoset XML files.
+    """A custom XML "pretty print" formatter for geoset XML files.
 
     Formatting is done by adding appropriate spaces and newlines to the
     text and tails of subelements in the XML tree. There is no return
@@ -228,7 +225,7 @@ def formatter(geoset_xml):
 
     Parameters
     ----------
-    geoset_xml : Element from xml.etree.ElementTree or lxml.etree
+    geoset_xml : `Element` from `xml.etree.ElementTree` or `lxml.etree`
         The geoset XML tree to be formatted.
 
     """
@@ -254,16 +251,15 @@ def formatter(geoset_xml):
 
 
 def write(geoset, filename):
-    """
-    Write a Geoset instance to a geoset XML file.
+    """Write a |Geoset| instance to a geoset XML file.
 
-    Uses the toxml function to form an XML tree which is then written to
-    file. See toxml for details.
+    Uses `toxml` to form an XML tree which is then written to file. See
+    `toxml` for details.
 
     Parameters
     ----------
-    geoset : Geoset
-        The input Geoset instance.
+    geoset : |Geoset|
+        The input |Geoset| instance.
     filename : str
         Destination path of the output geoset XML file.
 
