@@ -6,13 +6,13 @@ Utilities for working with objects from the geometry subpackage of `shapely
 
 This package defines a custom data structure called a *geoset* that enables
 basic grouping and attribution of objects from `shapely.geometry`. The
-geoset structure is implemented using nested classes: |Geo| instances are
-stored in |Item| instances, and |Item| instances are stored in a |Geoset|
-instance. See the |Geoset| class for a full description of the geoset
+geoset structure is implemented using nested classes: `Geo` instances are
+stored in `Item` instances, and `Item` instances are stored in a `Geoset`
+instance. See the `Geoset` class for a full description of the geoset
 model.
 
 This package also contains the `geosetxml` module for interfacing with the
-|Geoset| class. It defines the *geoset XML format*, an XML representation
+`Geoset` class. It defines the *geoset XML format*, an XML representation
 of the geoset data structure (see `geosetxml.toxml`).
 
 There are also some functions for processing `shapely.geometry.Polygon`
@@ -30,15 +30,3 @@ and `numpydoc <https://github.com/numpy/numpydoc>`_)::
   cd geoutil/docs
   make html
   open _build/html/index.html
-
-
-.. references
-
-.. |Geo| replace:: `~geoutil._geoset.Geo`
-.. |Item| replace:: `~geoutil._geoset.Item`
-.. |Geoset| replace:: `~geoutil._geoset.Geoset`
-
-.. |validate_poly| replace:: `~geoutil._utils.validate_poly`
-.. |poly_pix2world| replace:: `~geoutil._utils.poly_pix2world`
-.. |poly_world2pix| replace:: `~geoutil._utils.poly_world2pix`
-.. |poly_translate| replace:: `~geoutil._utils.poly_translate`
