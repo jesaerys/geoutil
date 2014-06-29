@@ -58,13 +58,9 @@ class Geo(object):
     Methods
     -------
     pix2world
-        Return a copy with coordinates converted to the WCS world system.
     world2pix
-        Return a copy with coordinates converted to the pixel system.
     translate
-        Return a copy with coordinates translated by dx and dy.
     copy
-        Return a deep copy.
 
     """
 
@@ -242,13 +238,9 @@ class Item(object):
     Methods
     -------
     pix2world
-        Return a copy with coordinates converted to the WCS world system.
     world2pix
-        Return a copy with coordinates converted to the pixel system.
     translate
-        Return a copy with coordinates translated by dx and dy.
     copy
-        Return a deep copy.
 
     """
 
@@ -414,6 +406,7 @@ class Geoset(object):
     ----------
     items : list
         List of zero or more `Item` instances.
+    geos
     attrs : dict-like or None
         Attributes as key-value pairs (typically an `OrderedDict`). None if
         no attributes.
@@ -424,16 +417,10 @@ class Geoset(object):
 
     Methods
     -------
-    geos
-        Return a complete listing of `Geo` instances in the tree.
     pix2world
-        Return a copy with coordinates converted to the WCS world system.
     world2pix
-        Return a copy with coordinates converted to the pixel system.
     translate
-        Return a copy with coordinates translated by dx and dy.
     copy
-        Return a deep copy.
 
     Notes
     -----
